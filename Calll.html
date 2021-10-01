@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="evo-calendar.css">
+    <link rel="stylesheet" href="evo-calendar.midnight-blue.css">
+    <link rel="stylesheet" href="evo-calendar.midnight-blue.min.css">
+
+    <title>Document</title>
+    <style>
+        #evoCalendar {
+            width: 900px;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="addtask.html">Add Task</a>
+        <a href="task.html">All task</a>
+        <a class="active"  href="#">Calander</a>
+    </div>
+    <br>
+   
+
+    <div class="hero">
+        <div id="evoCalendar"></div>
+    </div>
+
+    <br><br><br><br>
+
+    <script src="jquery.min.js"></script>
+    <script src="evo-calendar.min.js"></script>
+    <script>
+
+
+
+        let Events = JSON.parse(localStorage.getItem("user"));
+        let myEvents = []
+
+        myEvents = Events.map((item, index) => {
+            console.log(item)
+            return {
+                id: index,
+                name: item.task,
+                // badge: "08/03 - 08/05",
+                date: item.date,
+                description: item.status,
+                badge:item.prior,
+                color: changeColor(item),
+                type: "event",
+            }
+        })
+
+        console.log(myEvents[0])
+        function changeColor(item) {
+
+            if (item.prior == "High") {
+                return "red"
+
+
+            }
+            else if (item.prior == "Medium") {
+                return "orange"
+            } else {
+                return "green"
+            }
+
+        }
+
+
+        $('#evoCalendar').evoCalendar({
+
+            calendarEvents: myEvents
+
+        });
+
+
+
+        $('#evoCalendar').evoCalendar({
+            format: 'mm/dd/yyyy',
+            titleFormat: 'MM yyyy',
+            eventHeaderFormat: 'MM d, yyyy'
+        });
+
+
+        $('#evoCalendar').evoCalendar({
+            sidebarToggler: false,
+            sidebarDisplayDefault: false,
+            eventListToggler: false,
+            eventDisplayDefault: false,
+        });
+
+
+
+        $('#evoCalendar').evoCalendar({
+            todayHighlight: false
+        });
+
+
+
+
+        $('#evoCalendar').evoCalendar({
+
+            onSelectDate: function () {
+
+                console.log('onSelectDate!')
+
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>

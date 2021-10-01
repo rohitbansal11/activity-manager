@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   
+
+    <title>All task</title>
+    <style>
+        .editdiv{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <br>
+    <div class="container">
+        <header>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link " href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="addtask.html">Add Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">All Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="Calll.html">Calander</a>
+                </li>
+
+            </ul>
+        </header>
+
+    </div>
+
+
+    <br>
+    <br>
+    
+
+    <div class="container editdiv"  id="editdiv">
+        <form id="taskform">
+            <h4 class="head" id="head">plz fill all field </h4>
+            <input type="hidden" id="saveindex">
+            <div class="form-group">
+                <label for="Task">Task</label>
+                <input type="text" class="form-control" id="task" placeholder="Enter Task">
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <select class="form-control" id="status">
+                    <option value="none">Select Status</option>
+                    <option value="Inprogress">Inprogress</option>
+                    <option value="Complete">Complete</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Priority">Priority</label>
+                <select class="form-control" id="prior">
+                    <option value="none">Select Status</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Date picker">Date picker</label>
+                <input class="form-control" type="date" id="date" name="Datepicker">
+            </div>
+
+
+
+        </form>
+        <button class="btn btn-outline-primary" id="addtaskbtn" >Submit</button>
+        
+    </div>
+
+
+
+    <br><br>
+    <div class="container">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Task</th>
+                    <th scope="col">Staus</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Date</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+
+                </tr>
+            </thead>
+            <tbody id="mytbody">
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+
+        function showData() {
+            document.getElementById("mytbody").innerHTML = "";
+            let user_record = new Array();
+            user_record = JSON.parse(localStorage.getItem("user")) ? JSON.parse(localStorage.getItem("user")) : []
+            if (user_record) {
+                for (let i = 0; i < user_record.length; i++) {
+                    let addDiv = document.createElement('tr');
+                    addDiv.className += "mytr";
+
+
+                    addDiv.innerHTML = ` 
+                    <td>`+ user_record[i].task + `</td>
+                        <td>`+ user_record[i].status + `</td>
+                        <td>`+ user_record[i].prior + `</td>
+                        <td>`+ user_record[i].date + `</td>
+                        
+                        <td ><a onclick="edittask(${i})" class="btn btn-outline-primary">Edit </a> </td>
+                        <td><a onclick="ondel(${i})" class="btn btn-outline-primary">Delete </a></td>`;
+                    document.getElementById("mytbody").appendChild(addDiv);
+
+                }
+            }
+        }
+
+        function ondel(i) {
+
+            let webtask = localStorage.getItem('user');
+            console.log(webtask);
+            let taskobj = JSON.parse(webtask);
+            console.log(taskobj);
+            taskobj.splice(i, 1);
+            localStorage.setItem('user', JSON.stringify(taskobj));
+
+            // var delitem = JSON.parse()
+            // delitem.splice(i, 1);
+            // localStorage.setItem('user', JSON.stringify(delitem));
+            // var key = document.getElementById('fullName').value; //gets key from user
+            // localStorage.removeItem(key) //passes key to the removeItem method
+            // console.log("remove items");
+
+            showData()
+
+        }
+        function edittask(i) {
+            let edittaskk, editstatus, editprior, editdate;
+            edittaskk = document.getElementById('task');
+            editstatus = document.getElementById('status');
+            editprior = document.getElementById('prior');
+            editdate = document.getElementById('date');
+            
+
+            let saveindex = document.getElementById("saveindex");
+            let editdiv = document.getElementById('editdiv');
+           
+            saveindex.value = i;
+            console.log(saveindex.value);
+            let webtask = localStorage.getItem('user');
+            let taskObj = JSON.parse(webtask);
+
+            // addtaskinput.value = taskObj[index]['task_name'];
+            edittaskk.value= taskObj[i]['task'];
+            console.log(taskObj[i]['task']);
+            console.log(edittaskk);
+            editstatus.value = taskObj[i]['status'];
+            editprior.value = taskObj[i]['prior'];
+            editdate.value = taskObj[i]['date'];
+            
+           editdiv.style.display='block';
+
+        }
+        let addtaskbtn = document.getElementById("addtaskbtn");
+ 
+        addtaskbtn.addEventListener("click", task);
+          function task(){
+            
+            let edittaskk, editstatus, editprior, editdate;
+            edittaskk = document.getElementById('task');
+            editstatus = document.getElementById('status');
+            editprior = document.getElementById('prior');
+            editdate = document.getElementById('date');
+
+          
+            let webtask = localStorage.getItem("user");
+            let taskObj = JSON.parse(webtask); 
+            let saveindex = document.getElementById("saveindex").value;
+            let editdiv = document.getElementById('editdiv');
+            // taskObj[saveindex] = 
+
+            for (keys in taskObj[saveindex]) {
+                 if(keys == 'task'){
+                    // taskObj[saveindex].task_name = addtaskinput.value;
+        
+                     taskObj[saveindex]['task'] = edittaskk.value;
+                     taskObj[saveindex]['status'] = editstatus.value;
+                     taskObj[saveindex]['prior'] = editprior.value;
+                     taskObj[saveindex]['date'] = editdate.value;
+                  
+                     
+
+                 }
+                // if(keys == 'email'){
+                //     taskObj[saveindex].email = email;
+                // }
+                // if(keys == 'mobile'){
+                //     taskObj[saveindex].mobile = mobile;
+                // }
+                // if(keys == 'state'){
+                //     taskObj[saveindex].state = state;
+                // }
+                // if(keys == 'city'){
+                //     taskObj[saveindex].city = city;
+                // }
+              }
+            // taskObj[saveindex] = {'task_name':addtaskinput.value, 'completeStatus':false} ;
+          //  taskObj[saveindex][task_name] = addtaskinput.value;
+            
+            localStorage.setItem("user", JSON.stringify(taskObj));
+            restform();
+            editdiv.style.display='none';
+            
+
+            showData();
+        }
+        function restform() {
+            document.getElementById("taskform").reset();
+
+        }
+
+        showData();
+    </script>
+
+</body>
+
+</html>

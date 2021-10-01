@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+
+    <title>Add task</title>
+    <style>
+        .head {
+            display: none;
+            color: red;
+        }
+        .addtaskbtn{
+            display: none;
+        }
+    </style>
+</head>
+
+
+<body>
+    <br>
+    <br>
+
+    <div class="container">
+        <header>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link " href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Add Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="task.html">All Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="Calll.html">Calander</a>
+                </li>
+
+            </ul>
+        </header>
+
+    </div>
+
+    <div class="container">
+        <form id="taskform">
+            <h4 class="head" id="head">plz fill all field </h4>
+            <input type="hidden" id="saveindex">
+            <div class="form-group">
+                <label for="Task">Task</label>
+                <input type="text" class="form-control" id="task" placeholder="Enter Task">
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <select class="form-control" id="status">
+                    <option value="none">Select Status</option>
+                    <option value="Inprogress">Inprogress</option>
+                    <option value="Complete">Complete</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Priority">Priority</label>
+                <select class="form-control" id="prior">
+                    <option value="none">Select Status</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Date picker">Date picker</label>
+                <input class="form-control" type="date" id="date" name="Datepicker">
+            </div>
+
+
+
+        </form>
+        <button class="btn btn-outline-primary addtaskbtn" id="addtaskbtn" onclick="task()">Save Data</button>
+        <button class="btn btn-outline-primary" onclick="myshow()">Show Taday task</button>
+        <button class="btn btn-outline-primary submitbtn" id="submitbtn" onclick="myadd()">Submit</button>
+    </div>
+
+
+
+
+    <div class="container">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Task</th>
+                    <th scope="col">Staus</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody id="mytbody">
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+    <script>
+
+function myadd() {
+            let task = document.getElementById('task').value;
+            let status = document.getElementById('status').value;
+            let prior = document.getElementById('prior').value;
+            let date = document.getElementById('date').value;
+            let head = document.getElementById('head');
+            console.log(task);
+            console.log(status);
+            console.log(prior);
+            console.log(date);
+
+
+
+            // localStorage.setItem('name' , name);
+            // localStorage.setItem('email' , email);
+            // localStorage.setItem('psw' , psw);
+
+
+
+            if (task !== '' && status !== 'none' && prior !== 'none' && date !== '') {
+                let user_record = new Array();
+                user_record = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : []
+
+                user_record.push({
+                    'task': task,
+                    'status': status,
+                    'prior': prior,
+                    'date': date,
+
+                })
+                localStorage.setItem('user', JSON.stringify(user_record));
+                head.style.display = 'none';
+                restform()
+
+            } else {
+                head.style.display = 'block';
+            }
+
+
+
+            // console.log(localstorage.getItem('user'));
+
+
+
+
+
+
+        }
+        
+        function myshow() {
+            const d = new Date();
+            let year = d.getFullYear();
+            let moun = d.getMonth();
+            let ddate = d.getDate();
+
+            let fulldate = year + '-0' + (moun + 1) + '-' + (ddate);
+
+            document.getElementById("mytbody").innerHTML = "";
+            let user_record = new Array();
+
+            user_record = JSON.parse(localStorage.getItem("user")) ? JSON.parse(localStorage.getItem("user")) : []
+
+
+
+
+
+            if (user_record) {
+                for (let i = 0; i < user_record.length; i++) {
+                    let myshow = user_record[i].date;
+
+
+                    if (fulldate == myshow) {
+                        let addDiv = document.createElement('tr');
+                        addDiv.className += "mytr";
+
+
+                        addDiv.innerHTML = ` 
+                    <td>`+ user_record[i].task + `</td>
+                        <td>`+ user_record[i].status + `</td>
+                        <td>`+ user_record[i].prior + `</td>
+                        <td>`+ user_record[i].date + `</td>
+                        
+                        <td ><a onclick="edittask(${i})" class="btn btn-outline-primary">Edit </a> </td>
+                        <td><a onclick="ondel(${i})" class="btn btn-outline-primary">Delete </a></td>`;
+                        document.getElementById("mytbody").appendChild(addDiv);
+
+                    } else {
+                        console.log('no');
+                    }
+
+
+
+                }
+            }
+
+
+        }
+        function ondel(i) {
+
+            let webtask = localStorage.getItem('user');
+            console.log(webtask);
+            let taskobj = JSON.parse(webtask);
+            console.log(taskobj);
+            taskobj.splice(i, 1);
+            localStorage.setItem('user', JSON.stringify(taskobj));
+
+            // var delitem = JSON.parse()
+            // delitem.splice(i, 1);
+            // localStorage.setItem('user', JSON.stringify(delitem));
+            // var key = document.getElementById('fullName').value; //gets key from user
+            // localStorage.removeItem(key) //passes key to the removeItem method
+            // console.log("remove items");
+
+            myshow()
+
+        }
+        function edittask(i) {
+            let edittaskk, editstatus, editprior, editdate;
+            edittaskk = document.getElementById('task');
+            editstatus = document.getElementById('status');
+            editprior = document.getElementById('prior');
+            editdate = document.getElementById('date');
+
+
+            let saveindex = document.getElementById("saveindex");
+            let editdiv = document.getElementById('editdiv');
+            let submitbtn= document.getElementById('submitbtn');
+            let addedittask= document.getElementById('addtaskbtn');
+
+            saveindex.value = i;
+            console.log(saveindex.value);
+            let webtask = localStorage.getItem('user');
+            let taskObj = JSON.parse(webtask);
+
+            // addtaskinput.value = taskObj[index]['task_name'];
+            edittaskk.value = taskObj[i]['task'];
+            console.log(taskObj[i]['task']);
+            console.log(edittaskk);
+            editstatus.value = taskObj[i]['status'];
+            editprior.value = taskObj[i]['prior'];
+            editdate.value = taskObj[i]['date'];
+
+            submitbtn.style.display='none';
+            addedittask.style.display='block';
+
+            
+
+        }
+        
+
+        
+        function task() {
+
+            let edittaskk, editstatus, editprior, editdate;
+            edittaskk = document.getElementById('task');
+            editstatus = document.getElementById('status');
+            editprior = document.getElementById('prior');
+            editdate = document.getElementById('date');
+
+
+            let webtask = localStorage.getItem("user");
+            let taskObj = JSON.parse(webtask);
+            let saveindex = document.getElementById("saveindex").value;
+            let submitbtn= document.getElementById('submitbtn');
+            let addedittask= document.getElementById('addtaskbtn');
+            
+            // taskObj[saveindex] = 
+
+            for (keys in taskObj[saveindex]) {
+                if (keys == 'task') {
+                    // taskObj[saveindex].task_name = addtaskinput.value;
+
+                    taskObj[saveindex]['task'] = edittaskk.value;
+                    taskObj[saveindex]['status'] = editstatus.value;
+                    taskObj[saveindex]['prior'] = editprior.value;
+                    taskObj[saveindex]['date'] = editdate.value;
+
+
+
+                }
+                // if(keys == 'email'){
+                //     taskObj[saveindex].email = email;
+                // }
+                // if(keys == 'mobile'){
+                //     taskObj[saveindex].mobile = mobile;
+                // }
+                // if(keys == 'state'){
+                //     taskObj[saveindex].state = state;
+                // }
+                // if(keys == 'city'){
+                //     taskObj[saveindex].city = city;
+                // }
+            }
+            // taskObj[saveindex] = {'task_name':addtaskinput.value, 'completeStatus':false} ;
+            //  taskObj[saveindex][task_name] = addtaskinput.value;
+
+            localStorage.setItem("user", JSON.stringify(taskObj));
+            restform();
+            submitbtn.style.display='block';
+            addedittask.style.display='none';
+            myshow();
+
+            
+        }
+        function restform() {
+            document.getElementById("taskform").reset();
+
+        }
+    </script>
+
+</body>
+
+</html>
